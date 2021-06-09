@@ -1,0 +1,7 @@
+#include "string.hpp"
+
+String string::toArduinoString() {
+    return String(c_str());
+}
+
+string::string(String s) : std::string(s.c_str()) {}
