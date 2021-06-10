@@ -1,0 +1,6 @@
+98c98
+<         _async_queue = xQueueCreate(32, sizeof(lwip_event_packet_t *));
+---
+>         _async_queue = xQueueCreate(256, sizeof(lwip_event_packet_t *));
+1338a1339
+> 
