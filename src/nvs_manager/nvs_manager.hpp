@@ -5,8 +5,8 @@
 class NVSManager {
     public:
         NVSManager();
-        State getState();
-        void setState(State state);
+        State readState();
+        void writeState(State state);
     private:
         State currentState;
 };

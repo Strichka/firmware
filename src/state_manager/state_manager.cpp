@@ -2,9 +2,9 @@
 #include "dependency_manager/dependency_manager.hpp"
 
 StateManager::StateManager() : nvsManager(dependencyManager.getNVSManager()) {
-    state = nvsManager.getState();
+    state = nvsManager.readState();
 }
 
 void StateManager::storeState() {
-    nvsManager.setState(state);
+    nvsManager.writeState(state);
 }

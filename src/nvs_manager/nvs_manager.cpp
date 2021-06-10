@@ -15,7 +15,7 @@
 #define NETWORK_STA_SSID "n_stassid"
 #define NETWORK_STA_PASSWORD "n_stapass"
 
-State NVSManager::getState() {
+State NVSManager::readState() {
     State state;
     
     state.policy.accepted = NVS.getInt(POLICY_ACCEPTED);
@@ -37,7 +37,7 @@ State NVSManager::getState() {
     return state;
 }
 
-void NVSManager::setState(State state) {
+void NVSManager::writeState(State state) {
     if (currentState.policy.accepted != state.policy.accepted) {
         NVS.setInt(POLICY_ACCEPTED, state.policy.accepted);
     }
@@ -77,5 +77,5 @@ void NVSManager::setState(State state) {
 
 NVSManager::NVSManager() {
     NVS.begin();
-    getState();
+    readState();
 }
