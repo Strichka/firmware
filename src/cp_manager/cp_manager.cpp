@@ -14,5 +14,6 @@ CPManager::CPManager() : stateManager(dependencyManager.getStateManager()), spif
 }
 
 void CPManager::run() {
+    info_logln("Running control panel webserver");
     webServer.begin();
 }

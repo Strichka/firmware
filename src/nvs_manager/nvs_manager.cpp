@@ -1,5 +1,6 @@
 #include "nvs_manager.hpp"
 #include <ArduinoNvs.h>
+#include "utils/log.hpp"
 
 #define POLICY_ACCEPTED "p_a"
 #define POLICY_SET "p_s"
@@ -33,6 +34,8 @@ State NVSManager::readState() {
     state.networkConfig.staPassword = NVS.getString(NETWORK_STA_PASSWORD);
 
     currentState = state;
+
+    info_logln("State read");
 
     return state;
 }
@@ -73,6 +76,8 @@ void NVSManager::writeState(State state) {
     }
 
     currentState = state;
+
+    info_logln("State written");
 }
 
 NVSManager::NVSManager() {
