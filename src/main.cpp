@@ -11,7 +11,7 @@ class Firmware {
 };
 
 Firmware::Firmware() : ledManager(dependencyManager.getLEDManager()) {
-    dependencyManager.getCPManager();
+    dependencyManager.getCPManager().run();
 }
 
 void Firmware::tick() {}

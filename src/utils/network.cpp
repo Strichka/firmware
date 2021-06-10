@@ -1,5 +1,6 @@
 #include "network.hpp"
 #include "config.hpp"
+#include "utils/log.hpp"
 
 #define MAC_SIZE 6
 #define MAC_HEX_COLON_LENGTH 17
@@ -7,12 +8,12 @@
 string generateAPSSID() {
     uint8_t mac[MAC_SIZE];
     esp_read_mac(mac, ESP_MAC_WIFI_SOFTAP);
-    char* uid = new char[6];
+    char* uid = new char[MAC_SIZE];
     for (uint8_t i = 0; i < 6; i++) {
         uid[i] = SSID_ALPHABET[mac[i] % SSID_ALPHABET_LENGTH];
     }
     char* ssid = new char[DEFAULT_SSID_LENGTH];
-    sprintf(ssid, DEFAULT_SSID_FORMAT, uid);
+    snprintf(ssid, DEFAULT_SSID_LENGTH, DEFAULT_SSID_FORMAT, uid);
     return ssid;
 }
 

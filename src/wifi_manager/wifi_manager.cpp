@@ -11,7 +11,7 @@ WiFiManager::WiFiManager() : stateManager(dependencyManager.getStateManager()) {
     WiFi.mode(WIFI_AP_STA);
     WiFi.softAP(apSSID.c_str(), apPassword.c_str());
 
-    info_logf("AP IP:\t%s\n", WiFi.softAPIP().toString().c_str());
+    info_logf("AP IP:\t\t%s\n", WiFi.softAPIP().toString().c_str());
 
     stateManager.state.info.apMode = true;
 
@@ -39,7 +39,7 @@ WiFiManager::WiFiManager() : stateManager(dependencyManager.getStateManager()) {
             stateManager.state.info.staMode = true;
             stateManager.state.info.staIP = staIP;
 
-            info_logf("STA IP:\t%s\n", staIP.c_str());
+            info_logf("STA IP:\t\t%s\n", staIP.c_str());
         } else {
             info_logln("FAILED");
         }
