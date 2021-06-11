@@ -2,7 +2,7 @@
 
 #include <Arduino.h>
 
-UInt16Interpolator::UInt16Interpolator(uint16_t* _variable, uint16_t _desiredValue, uint64_t _duration, void(*_callback)(UInt16Interpolator*)) {
+UInt16Interpolator::UInt16Interpolator(uint16_t* _variable, uint16_t _desiredValue, uint64_t _duration, std::function<void(UInt16Interpolator*)> _callback) {
     variable = _variable;
     originalValue = *_variable;
     desiredValue = _desiredValue;

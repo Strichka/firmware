@@ -8,13 +8,16 @@ class Firmware {
         void tick();
     private:
         LEDManager& ledManager;
+        StateManager& stateManager;
 };
 
-Firmware::Firmware() : ledManager(dependencyManager.getLEDManager()) {
+Firmware::Firmware() : ledManager(dependencyManager.getLEDManager()), stateManager(dependencyManager.getStateManager()) {
     dependencyManager.getCPManager().run();
 }
 
-void Firmware::tick() {}
+void Firmware::tick() {
+    stateManager.tick();
+}
 
 Firmware* firmware;
 

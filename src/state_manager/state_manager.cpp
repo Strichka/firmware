@@ -25,3 +25,19 @@ StateManager::StateManager() : nvsManager(dependencyManager.getNVSManager()) {
 void StateManager::storeState() {
     nvsManager.writeState(state);
 }
+
+void StateManager::interpolateUInt16(uint16_t* variable, uint16_t desiredValue, uint64_t duration) {
+    if (uInt16Interpolators.count(variable)) {
+        UInt16Interpolator* interpolator = uInt16Interpolators[variable];
+        delete interpolator;
+    }
+    uInt16Interpolators[variable] = new UInt16Interpolator(variable, desiredValue, duration, [this](UInt16Interpolator*) { storeState(); });
+}
+
+void StateManager::tick() {
+    for (std::map<uint16_t*, UInt16Interpolator*>::iterator it = uInt16Interpolators.begin(); it != uInt16Interpolators.end(); it++) {
+        if (!it->second->stopped) {
+            it->second->tick();
+        }
+    }
+}
