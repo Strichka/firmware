@@ -17,6 +17,7 @@ WiFiManager::WiFiManager() : stateManager(dependencyManager.getStateManager()) {
 
     string staSSID = stateManager.state.networkConfig.staSSID, staPassword = stateManager.state.networkConfig.staPassword;
 
+    stateManager.state.info.staMode = false;
     if (staSSID.length() > 0) {
         info_logf("STA SSID:\t%s\nSTA password:\t%s\n", staSSID.c_str(), staPassword.c_str());
 
