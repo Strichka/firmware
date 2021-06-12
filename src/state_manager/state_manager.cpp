@@ -1,16 +1,18 @@
 #include "state_manager.hpp"
+
+#include <queue>
 #include "dependency_manager/dependency_manager.hpp"
 #include "utils/network.hpp"
 
 StateManager::StateManager() : nvsManager(dependencyManager.getNVSManager()) {
     state = nvsManager.readState();
 
-    if (state.networkConfig.apSSID.length() == 0) {
-        state.networkConfig.apSSID = generateAPSSID();
+    if (state.network.apSSID.length() == 0) {
+        state.network.apSSID = generateAPSSID();
     }
 
-    if (state.networkConfig.apPassword.length() == 0) {
-        state.networkConfig.apPassword = DEFAULT_AP_PASSWORD;
+    if (state.network.apPassword.length() == 0) {
+        state.network.apPassword = DEFAULT_AP_PASSWORD;
     }
 
     state.info.firmwareName = FIRMWARE_NAME;
@@ -26,17 +28,29 @@ void StateManager::storeState() {
     nvsManager.writeState(state);
 }
 
+std::queue<std::map<uint16_t*, UInt16Interpolator*>::iterator> deleteQueue;
+
 void StateManager::interpolateUInt16(uint16_t* variable, uint16_t desiredValue, uint64_t duration) {
-    if (uInt16Interpolators.count(variable)) {
-        UInt16Interpolator* interpolator = uInt16Interpolators[variable];
-        delete interpolator;
+    if (uInt16Interpolators.count(variable) > 0) {
+        deleteQueue.push(uInt16Interpolators.find(variable));
+    }
+    if (*variable == desiredValue) {
+        return;
     }
     uInt16Interpolators[variable] = new UInt16Interpolator(variable, desiredValue, duration, [this](UInt16Interpolator*) { storeState(); });
 }
 
 void StateManager::tick() {
+    while (!deleteQueue.empty()) {
+        uInt16Interpolators.erase(deleteQueue.front()->first);
+        delete deleteQueue.front()->second;
+        deleteQueue.pop();
+    }
+
     for (std::map<uint16_t*, UInt16Interpolator*>::iterator it = uInt16Interpolators.begin(); it != uInt16Interpolators.end(); it++) {
-        if (!it->second->stopped) {
+        if (it->second->stopped) {
+            deleteQueue.push(it);
+        } else {
             it->second->tick();
         }
     }

@@ -21,6 +21,7 @@ void UInt16Interpolator::tick() {
     double t = (double) (millis() - start) / (double) duration;
     *variable = originalValue + (desiredValue - originalValue) * t;
     if (t >= 1.0) {
+        *variable = desiredValue;
         stopped = true;
         if (callback != nullptr) {
             callback(this);
