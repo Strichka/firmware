@@ -22,7 +22,9 @@ void Firmware::tick() {
 Firmware* firmware;
 
 void setup() {
-    init_log(115200);
+    init_log(SERIAL_BAUDRATE);
+    dependencyManager.getStateManager().state.network.staSSID = "Bigdans_2.4GHz";
+    dependencyManager.getStateManager().state.network.staPassword = "07060515";
     firmware = new Firmware();
 }
 

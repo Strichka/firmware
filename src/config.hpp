@@ -14,3 +14,7 @@
 // Firmware parameters
 #define FIRMWARE_NAME "Strichka Firmware"
 #define FIRMWARE_VERSION "0.0.0"
+
+// Other
+#define INTERPOLATION_DURATION 100
+#define SERIAL_BAUDRATE 115200
