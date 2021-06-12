@@ -1,0 +1,3 @@
+[submodule "control-panel-webpage"]
+	path = control-panel-webpage
+	url = https://github.com/Strichka/control-panel-webpage
