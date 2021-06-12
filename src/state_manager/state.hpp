@@ -11,17 +11,17 @@ struct Info {
     bool apMode, staMode;
 };
 
-struct LedConfig {
+struct Led {
     uint16_t modeIndex, brightness, speed, width, ledCount;
 };
 
-struct NetworkConfig {
+struct Network {
     string apSSID, apPassword, staSSID, staPassword;
 };
 
 struct State {
     Policy policy;
     Info info;
-    LedConfig ledConfig;
-    NetworkConfig networkConfig;
+    Led led;
+    Network network;
 };

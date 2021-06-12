@@ -3,7 +3,7 @@
 #include "utils/log.hpp"
 
 WiFiManager::WiFiManager() : stateManager(dependencyManager.getStateManager()) {
-    string apSSID = stateManager.state.networkConfig.apSSID, apPassword = stateManager.state.networkConfig.apPassword;
+    string apSSID = stateManager.state.network.apSSID, apPassword = stateManager.state.network.apPassword;
 
     info_logf("AP SSID:\t%s\nAP password:\t%s\n", apSSID.c_str(), apPassword.c_str());
 
@@ -15,7 +15,7 @@ WiFiManager::WiFiManager() : stateManager(dependencyManager.getStateManager()) {
 
     stateManager.state.info.apMode = true;
 
-    string staSSID = stateManager.state.networkConfig.staSSID, staPassword = stateManager.state.networkConfig.staPassword;
+    string staSSID = stateManager.state.network.staSSID, staPassword = stateManager.state.network.staPassword;
 
     stateManager.state.info.staMode = false;
     if (staSSID.length() > 0) {

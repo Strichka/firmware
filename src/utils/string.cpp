@@ -6,3 +6,4 @@ String string::toArduinoString() {
 
 string::string(String s) : std::string(s.c_str()) {}
 string::string(const char* s) : std::string(s) {}
+string::string(std::string s) : std::string(s) {}

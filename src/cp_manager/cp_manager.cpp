@@ -1,6 +1,7 @@
 #include "cp_manager.hpp"
 
 #include <ArduinoJson.h>
+#include <AsyncJson.h>
 #include "dependency_manager/dependency_manager.hpp"
 #include "utils/string.hpp"
 #include "utils/log.hpp"
@@ -33,9 +34,9 @@ CPManager::CPManager() : stateManager(dependencyManager.getStateManager()), spif
         StaticJsonDocument<JSON_SIZE> json;
         
         if (stateManager.state.policy.set) {
-            json["policy"] = stateManager.state.policy.accepted;
+            json["accepted"] = stateManager.state.policy.accepted;
         } else {
-            json["policy"] = nullptr;
+            json["accepted"] = nullptr;
         }
 
         string jsonString;
@@ -65,16 +66,16 @@ CPManager::CPManager() : stateManager(dependencyManager.getStateManager()), spif
         request->send(STATUS_OK, CONTENT_TYPE_JSON, jsonString.c_str());
     });
 
-    webServer.on("/v0/led/config", HTTP_GET, [this](AsyncWebServerRequest* request) {
+    webServer.on("/v0/led", HTTP_GET, [this](AsyncWebServerRequest* request) {
         DEBUG_LOG_REQUEST;
 
         StaticJsonDocument<JSON_SIZE> json;
 
-        json["mode_index"] = stateManager.state.ledConfig.modeIndex;
-        json["brightness"] = stateManager.state.ledConfig.brightness;
-        json["speed"] = stateManager.state.ledConfig.speed;
-        json["width"] = stateManager.state.ledConfig.width;
-        json["led_count"] = stateManager.state.ledConfig.ledCount;
+        json["mode_index"] = stateManager.state.led.modeIndex;
+        json["brightness"] = stateManager.state.led.brightness;
+        json["speed"] = stateManager.state.led.speed;
+        json["width"] = stateManager.state.led.width;
+        json["led_count"] = stateManager.state.led.ledCount;
 
         string jsonString;
 
@@ -83,15 +84,15 @@ CPManager::CPManager() : stateManager(dependencyManager.getStateManager()), spif
         request->send(STATUS_OK, CONTENT_TYPE_JSON, jsonString.c_str());
     });
 
-    webServer.on("/v0/network/config", HTTP_GET, [this](AsyncWebServerRequest* request) {
+    webServer.on("/v0/network", HTTP_GET, [this](AsyncWebServerRequest* request) {
         DEBUG_LOG_REQUEST;
 
         StaticJsonDocument<JSON_SIZE> json;
 
-        json["ap_ssid"] = (std::string) stateManager.state.networkConfig.apSSID;
-        json["ap_password"] = (std::string) stateManager.state.networkConfig.apPassword;
-        json["sta_ssid"] = (std::string) stateManager.state.networkConfig.staSSID;
-        json["sta_password"] = (std::string) stateManager.state.networkConfig.staPassword;
+        json["ap_ssid"] = (std::string) stateManager.state.network.apSSID;
+        json["ap_password"] = (std::string) stateManager.state.network.apPassword;
+        json["sta_ssid"] = (std::string) stateManager.state.network.staSSID;
+        json["sta_password"] = (std::string) stateManager.state.network.staPassword;
 
         string jsonString;
 
@@ -99,6 +100,58 @@ CPManager::CPManager() : stateManager(dependencyManager.getStateManager()), spif
 
         request->send(STATUS_OK, CONTENT_TYPE_JSON, jsonString.c_str());
     });
+
+    AsyncCallbackJsonWebHandler* postPolicy = new AsyncCallbackJsonWebHandler("/v0/policy", [this](AsyncWebServerRequest *request, JsonVariant &json) {
+        DEBUG_LOG_REQUEST;
+
+        if (json["accepted"] == nullptr) {
+            stateManager.state.policy.set = false;
+        } else {
+            stateManager.state.policy.set = true;
+            stateManager.state.policy.accepted = json["accepted"];
+        }
+
+        stateManager.storeState();
+
+        request->send(STATUS_OK);
+    });
+
+    AsyncCallbackJsonWebHandler* postLed = new AsyncCallbackJsonWebHandler("/v0/led", [this](AsyncWebServerRequest *request, JsonVariant &json) {
+        DEBUG_LOG_REQUEST;
+
+        stateManager.state.led.modeIndex = json["mode_index"];
+        stateManager.state.led.ledCount = json["led_count"];
+
+        stateManager.interpolateUInt16(&stateManager.state.led.brightness, json["brightness"], INTERPOLATION_DURATION);
+        stateManager.interpolateUInt16(&stateManager.state.led.speed, json["speed"], INTERPOLATION_DURATION);
+        stateManager.interpolateUInt16(&stateManager.state.led.width, json["width"], INTERPOLATION_DURATION);
+
+        stateManager.storeState();
+
+        request->send(STATUS_OK);
+    });
+
+    AsyncCallbackJsonWebHandler* postNetwork = new AsyncCallbackJsonWebHandler("/v0/network", [this](AsyncWebServerRequest *request, JsonVariant &json) {
+        DEBUG_LOG_REQUEST;
+
+        std::string apSSID = json["ap_ssid"];
+        std::string apPassword = json["ap_password"];
+        std::string staSSID = json["sta_ssid"];
+        std::string staPassword = json["sta_password"];
+
+        stateManager.state.network.apSSID = apSSID;
+        stateManager.state.network.apPassword = apPassword;
+        stateManager.state.network.staSSID = staSSID;
+        stateManager.state.network.staPassword = staPassword;
+
+        stateManager.storeState();
+
+        request->send(STATUS_OK);
+    });
+
+    webServer.addHandler(postPolicy);
+    webServer.addHandler(postLed);
+    webServer.addHandler(postNetwork);
 }
 
 void CPManager::run() {
