@@ -22,6 +22,16 @@ CPManager::CPManager() : stateManager(dependencyManager.getStateManager()), spif
         request->send(spiffs, request->url());
     });
 
+    webServer.on("/v0/restart", HTTP_GET, [this](AsyncWebServerRequest* request) {
+        DEBUG_LOG_REQUEST;
+
+        request->send(STATUS_OK);
+
+        stateManager.storeState();
+
+        ESP.restart();
+    });
+
     webServer.on("/v0/ping", HTTP_GET, [this](AsyncWebServerRequest* request) {
         DEBUG_LOG_REQUEST;
         
@@ -50,7 +60,8 @@ CPManager::CPManager() : stateManager(dependencyManager.getStateManager()), spif
         DEBUG_LOG_REQUEST;
 
         StaticJsonDocument<JSON_SIZE> json;
-
+        // StaticJsonDocument<JSON_ARRAY_SIZE(2)> modesDocument;
+        
         json["firmware_name"] = (std::string) stateManager.state.info.firmwareName;
         json["firmware_version"] = (std::string) stateManager.state.info.firmwareVersion;
         json["ap_mode"] = stateManager.state.info.apMode;
@@ -58,6 +69,9 @@ CPManager::CPManager() : stateManager(dependencyManager.getStateManager()), spif
         json["ap_mac"] = (std::string) stateManager.state.info.apMAC;
         json["sta_mac"] = (std::string) stateManager.state.info.staMAC;
         json["sta_ip"] = (std::string) stateManager.state.info.staIP;
+
+        // JsonArray modes = modesDocument.to<JsonArray>();
+        // json["modes"] = modes;
 
         string jsonString;
 
