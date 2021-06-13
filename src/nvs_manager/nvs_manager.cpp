@@ -48,7 +48,7 @@ void NVSManager::writeState(State state) {
         NVS.setInt(POLICY_SET, state.policy.set);
     }
     if (currentState.led.modeIndex != state.led.modeIndex) {
-        NVS.setInt(LED_MODE_INDEX, state.policy.accepted);
+        NVS.setInt(LED_MODE_INDEX, state.led.modeIndex);
     }
     if (currentState.led.brightness != state.led.brightness) {
         NVS.setInt(LED_BRIGHTNESS, state.led.brightness);
@@ -57,10 +57,10 @@ void NVSManager::writeState(State state) {
         NVS.setInt(LED_SPEED, state.led.speed);
     }
     if (currentState.led.width != state.led.width) {
-        NVS.setInt(LED_WIDTH, state.policy.accepted);
+        NVS.setInt(LED_WIDTH, state.led.width);
     }
     if (currentState.led.ledCount != state.led.ledCount) {
-        NVS.setInt(LED_LED_COUNT, state.policy.accepted);
+        NVS.setInt(LED_LED_COUNT, state.led.ledCount);
     }
     if (currentState.network.apSSID != state.network.apSSID) {
         NVS.setString(NETWORK_AP_SSID, state.network.apSSID.toArduinoString());
@@ -69,10 +69,10 @@ void NVSManager::writeState(State state) {
         NVS.setString(NETWORK_AP_PASSWORD, state.network.apPassword.toArduinoString());
     }
     if (currentState.network.staSSID != state.network.staSSID) {
-        NVS.setString(NETWORK_STA_SSID, state.network.apPassword.toArduinoString());
+        NVS.setString(NETWORK_STA_SSID, state.network.staSSID.toArduinoString());
     }
     if (currentState.network.staPassword != state.network.staPassword) {
-        NVS.setString(NETWORK_STA_PASSWORD, state.network.apPassword.toArduinoString());
+        NVS.setString(NETWORK_STA_PASSWORD, state.network.staPassword.toArduinoString());
     }
 
     currentState = state;
