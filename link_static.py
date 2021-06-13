@@ -7,7 +7,7 @@ Import("env")
 PROJECT_DATA_DIR = env["PROJECT_DATA_DIR"]
 PROJECT_DIR = env["PROJECT_DIR"]
 
-src = join(PROJECT_DIR, "control-panel-webpage", "stub-webserver", "static")
+src = join(PROJECT_DIR, "control-panel-webpage", "static")
 dst = join(PROJECT_DATA_DIR, "static")
 
 if not isfile(dst) and not isdir(dst):
