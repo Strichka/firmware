@@ -1,5 +1,10 @@
 #pragma once
 
+// LED
+#define LED_TYPE WS2812B
+#define LED_PIN GPIO_NUM_13
+#define LED_MODE GRB
+
 // WebServer configuration
 #define CP_HTTP_PORT 80
 
