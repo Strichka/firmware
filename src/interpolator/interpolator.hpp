@@ -8,6 +8,7 @@ class UInt16Interpolator {
         bool started = false, stopped = false;
         UInt16Interpolator(uint16_t*, uint16_t, uint64_t, std::function<void(UInt16Interpolator*)> = nullptr);
         void tick();
+        uint16_t getDesiredValue();
     private:
         uint16_t* variable;
         uint16_t originalValue, desiredValue;

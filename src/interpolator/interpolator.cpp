@@ -29,3 +29,7 @@ void UInt16Interpolator::tick() {
         return;
     }
 }
+
+uint16_t UInt16Interpolator::getDesiredValue() {
+    return desiredValue;
+}

@@ -32,11 +32,16 @@ std::queue<std::map<uint16_t*, UInt16Interpolator*>::iterator> deleteQueue;
 
 void StateManager::interpolateUInt16(uint16_t* variable, uint16_t desiredValue, uint64_t duration) {
     if (uInt16Interpolators.count(variable) > 0) {
+        if (uInt16Interpolators[variable]->getDesiredValue() == desiredValue) {
+            return;
+        }
         deleteQueue.push(uInt16Interpolators.find(variable));
+    } else {
+        if (*variable == desiredValue) {
+            return;
+        }
     }
-    if (*variable == desiredValue) {
-        return;
-    }
+
     uInt16Interpolators[variable] = new UInt16Interpolator(variable, desiredValue, duration, [this](UInt16Interpolator*) { storeState(); });
 }
 
