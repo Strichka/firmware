@@ -29,6 +29,7 @@ void StateManager::storeState() {
 }
 
 std::queue<std::map<uint16_t*, UInt16Interpolator*>::iterator> deleteQueue;
+std::queue<std::pair<uint16_t*, UInt16Interpolator*>> addQueue;
 
 void StateManager::interpolateUInt16(uint16_t* variable, uint16_t desiredValue, uint64_t duration) {
     if (uInt16Interpolators.count(variable) > 0) {
@@ -42,7 +43,8 @@ void StateManager::interpolateUInt16(uint16_t* variable, uint16_t desiredValue, 
         }
     }
 
-    uInt16Interpolators[variable] = new UInt16Interpolator(variable, desiredValue, duration, [this](UInt16Interpolator*) { storeState(); });
+    UInt16Interpolator* interpolator = new UInt16Interpolator(variable, desiredValue, duration, [this](UInt16Interpolator*) { storeState(); });
+    addQueue.push(std::make_pair(variable, interpolator));
 }
 
 void StateManager::tick() {
@@ -50,6 +52,11 @@ void StateManager::tick() {
         uInt16Interpolators.erase(deleteQueue.front()->first);
         delete deleteQueue.front()->second;
         deleteQueue.pop();
+    }
+
+    while (!addQueue.empty()) {
+        uInt16Interpolators[addQueue.front().first] = addQueue.front().second;
+        addQueue.pop();
     }
 
     for (std::map<uint16_t*, UInt16Interpolator*>::iterator it = uInt16Interpolators.begin(); it != uInt16Interpolators.end(); it++) {
