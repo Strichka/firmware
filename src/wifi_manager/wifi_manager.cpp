@@ -8,6 +8,7 @@ WiFiManager::WiFiManager() : stateManager(dependencyManager.getStateManager()) {
     info_logf("AP SSID:\t%s\nAP password:\t%s\n", apSSID.c_str(), apPassword.c_str());
 
     WiFi.disconnect();
+    WiFi.setHostname(apSSID.c_str());
     WiFi.mode(WIFI_AP_STA);
     WiFi.softAP(apSSID.c_str(), apPassword.c_str());
 
