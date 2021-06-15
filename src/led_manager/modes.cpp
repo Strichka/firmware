@@ -24,5 +24,15 @@ void rainbow(CRGB* leds, Led config) {
     }
 }
 
-mode_function_t modes[] = {rainbow};
-uint16_t modeCount = 1;
+void noise(CRGB* leds, Led config) {
+    double speed = EXPONENT_MAP(config.speed, 0.0, 65535.0, 2.0, 8.0);
+    double width = EXPONENT_MAP(config.width, 0.0, 65535.0, 2.0, 16.0);
+    for (uint16_t i = 0; i < config.ledCount; i++) {
+        uint32_t x = uint32_t(i) * width;
+        uint32_t t = millis() * speed;
+        leds[i].setHSV(map(inoise16(x, t), 0, 65535, 0, 255), 255, config.brightness);
+    }
+}
+
+mode_function_t modes[] = {rainbow, noise};
+uint16_t modeCount = 2;
