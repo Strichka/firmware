@@ -131,10 +131,9 @@ CPManager::CPManager() : stateManager(dependencyManager.getStateManager()), spif
 
         stateManager.state.led.modeIndex = json["mode_index"];
         stateManager.state.led.ledCount = json["led_count"];
-
-        stateManager.interpolateUInt16(&stateManager.state.led.brightness, json["brightness"], INTERPOLATION_DURATION);
-        stateManager.interpolateUInt16(&stateManager.state.led.speed, json["speed"], INTERPOLATION_DURATION);
-        stateManager.interpolateUInt16(&stateManager.state.led.width, json["width"], INTERPOLATION_DURATION);
+        stateManager.state.led.brightness = json["brightness"];
+        stateManager.state.led.speed = json["speed"];
+        stateManager.state.led.width = json["width"];
 
         stateManager.storeState();
 

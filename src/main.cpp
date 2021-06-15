@@ -16,7 +16,6 @@ Firmware::Firmware() : ledManager(dependencyManager.getLEDManager()), stateManag
 }
 
 void Firmware::tick() {
-    stateManager.tick();
     ledManager.tick();
 }
 
